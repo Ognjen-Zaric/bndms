@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <title>BNDMS</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    {% include "Header.html" %}
+    {% include "logout.html" %}
+
+    <div class="container-fluid mt-3 mb-2 bg-dark text-white text-center py-4 banner">
+        <h2>Welcome to <strong>BNDMS</strong>, the Bosnian natural disaster monitoring system</h2>
+        <h4><samp class="text-center text-danger text-lg">*** Report and stay informed ***</samp></h4>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row">
+
+           
+            <div class="col-md-6 mb-4">
+                <div class="card">
+                    <div class="card-header"><h4><strong>News</strong></h4></div>
+                    <div class="card-body">
+                        {% if news %}
+                            {% for info in news %}
+                                <div class="card reports-item mb-2 px-2">
+                                    <h5>{{ info.title }}</h5>
+                                    <samp class="text-secondary"> {{ info.date }}</samp>
+                                    <p>{{ info.description }}</p>
+                                    <p>For area: {{ info.address }}</p>
+                                    {% if user.authority_level == "O" or user.authority_level == "A" %}
+                                    <div class="mb-2">
+                                        <a href="{% url 'update_news-page' info.id %}" class="btn btn-sm btn-outline-primary">Edit</a>
+                                        <a href="{% url 'delete_news-page' info.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p>No current news available</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>            
+        
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header"><h4><strong>Latest Reports</strong></h4></div>
+                    <div class="card-body">
+                        <ul class="list-group">
+                            {% if reports %}
+                                {% for report in reports %}
+                                    <div class="card reports-item mb-2 px-2">
+                                        <h5>{{ report.title }}</h5>
+                                        <samp class="text-secondary"> {{ report.date_reported }}</samp>
+                                        <p>{{ report.description }}</p>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <p>No reports available</p>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<br>
+<footer class="footer bg-dark text-white mt-auto py-3">
+    <p>&reg; Bosnian natural disaster monitoring system</p>
+</footer>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

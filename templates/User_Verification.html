@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/bootstrap.css">
+
+    <title>Reports</title>
+</head>
+<body>
+    {% include "Header.html" %}
+    {% include "logout.html" %}
+
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Reports</h1>
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                {% if unverified_users %}
+                    {% for user in unverified_users %}
+                        <div class="card mb-4 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ user.username }}</h5>
+                                <p class="card-text">
+                                    <strong>Role:</strong> {{ user.role }}
+                                </p>
+                                <a href="{% url 'create_task-page' report.id %}"><button class="btn btn-dark" type="submit">Verify User</button></a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="alert alert-secondary text-center" role="alert">
+                        No unverified new users.
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</body>
+</html>

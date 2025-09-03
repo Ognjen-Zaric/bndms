@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        #map {
+            height: 100vh;
+            width: 100vw;
+        }
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+        }
+        .logout-overlay {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 1001;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-overlay">
+        {% include "Header.html" %}
+    </div>
+    
+    <div class="logout-overlay">
+        {% include "logout.html" %}
+    </div>
+
+<div id="map"></div>
+<script>
+    // Initialize the map, centered on Bosnia (disable default zoom controls)
+    var map = L.map('map', {
+        zoomControl: false
+    }).setView([44.146531, 17.892139], 7); // Centered on Bosnia
+
+    // Add zoom controls in bottom-right position
+    L.control.zoom({
+        position: 'bottomright'
+    }).addTo(map);
+
+    // Add OpenStreetMap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Add markers for each report
+    {% for report in reports %}
+        {% if report.latitude and report.longitude %}
+            var marker = L.marker([{{ report.latitude }}, {{ report.longitude }}]).addTo(map);
+            marker.bindPopup("<b>{{ report.title }}</b><br>{{ report.description }}");
+        {% endif %}
+    {% endfor %}
+</script>
+<script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+</body>
